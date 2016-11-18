@@ -13,9 +13,9 @@ SinglePlayer::SinglePlayer() {
 	srand(time(NULL));
 	who = rand() % 2;
 	if (who)
-		username = "player";
+		username = "PLAYER";
 	else
-		username = "computer";
+		username = "COMPUTER";
 
 	count = 0; // count steps of game
 	win = 0;
@@ -49,7 +49,15 @@ void SinglePlayer::SingleGame(){
 					symbol = 'X';
 					count = 0;
 				}
+
 				cin >> x >> y;
+				if( (( x > 2 ) || ( x < 0 )) && (( y > 2 ) || ( y < 0 )) && (( symbol != 'X' ) || ( symbol != 'x' )) ){
+					cout << "Why you so stupid? Please, man, read the manual.\r\n" << endl;
+					symbol = 'X';
+					x = rand() % 3;
+					y = rand() % 3;
+				}
+
 			} else {
 				x = rand() % 3;
 				y = rand() % 3;

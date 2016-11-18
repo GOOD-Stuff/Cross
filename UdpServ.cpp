@@ -12,6 +12,7 @@ UdpServ::UdpServ() {
 	socket_desc   = 0;
 	int result = 0;
 	int id = 0;
+	udp_ip_mac();
 	UdpServInit();
 	/*
 	pthread_t ServerListen;
@@ -28,13 +29,51 @@ UdpServ::UdpServ() {
 	*/
 }
 
+
+/*
+ * @brief  Recognizes ip and mac address
+ *
+ * @param  none
+ *
+ * @return none
+ */
+void UdpServ::udp_ip_mac(void) {
+	struct ifreq ifr;
+	memset(&ifr, 0, sizeof(ifr));
+	strcpy(ifr.ifr_name, "eth0");
+
+	//********* IP Address ***************
+	int s = socket(AF_INET, SOCK_DGRAM, 0);
+	ioctl(s, SIOCGIFADDR, &ifr);
+
+	struct sockaddr_in *sa = (struct sockaddr_in*)&ifr.ifr_addr;
+
+	ip_address = inet_ntoa(sa->sin_addr);
+	char tmp_data[3];
+	int k = 0, l = 0;
+	for( unsigned int i = 0; i < strlen(ip_address); i++ ){
+		if( ip_address[i] != '.' ){
+			tmp_data[l] = ip_address[i];
+			l++;
+		}
+		else{
+			board_ip_addr[k] = atoi(&tmp_data[0]);
+			k++; l = 0;
+			memset(tmp_data, 0, 3);
+		}
+	}
+	board_ip_addr[k] = atoi(&tmp_data[0]);
+
+	close(s);
+}
+
 int UdpServ::UdpServInit(){
 	unsigned long addr = 0;
-	char IP_addr[15];
+	int GAME_PORT = 0;
 	memset(&forward_ip, 0, sizeof(forward_ip));
-	printf("Please, enter your IP address: ");
-	scanf("%s", &IP_addr);
-	inet_pton(AF_INET, IP_addr, &addr);
+	printf("Please, enter port for establish of connect : ");
+	scanf("%d", &GAME_PORT);
+	inet_pton(AF_INET, ip_address, &addr);
 	forward_ip.sin_family = AF_INET;
 	forward_ip.sin_port = htons(GAME_PORT);
 	forward_ip.sin_addr.s_addr = addr;

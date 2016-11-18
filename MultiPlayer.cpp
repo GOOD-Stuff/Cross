@@ -9,23 +9,32 @@
 
 MultiPlayer::MultiPlayer() {
 	memset(buff, 0, BUF_SIZE);
+
+	cout << " ________________________________" << endl;
+	cout << "|------ Please create your ------|" << endl;
+	cout << "|----------- nickname -----------|" << endl;
+	printf(": ");
+	scanf("%s", &this->nickname);
+	cout << "|________________________________|" << endl;
+
 	cout << " ________________________________" << endl;
 	cout << "|--------- Multiplayer ----------|" << endl;
 	cout << "|------------ Menu --------------|" << endl;
 	cout << "|------ 1) Connect to Host ------|" << endl;
 	cout << "|------ 2) Create a game --------|" << endl;
-	cout << "|------ 3) Return back   --------|" << endl;
+	cout << "|------ 3) Hot seat (not yet) ---|" << endl;
+	cout << "|---- anything) Return back -----|" << endl;
 	cout << "|________________________________|" << endl;
 	cout << "You choose: ";
 
-	int menu = 0;
+	char menu = 0;
 	cin >> menu;
 	switch(menu){
-	case 1:{
+	case '1':{
 		Connect2Host();
 		break;
 	}
-	case 2:{
+	case '2':{
 		CreateGame();
 		break;
 	}
@@ -35,30 +44,47 @@ MultiPlayer::MultiPlayer() {
 }
 
 void MultiPlayer::Connect2Host(){
+	char IP_addr[15];
+	printf("Please, enter IP address to connect: ");
+	scanf("%s", &IP_addr);
+	printf("U enter: %s\n", IP_addr);
+	printf("Please, enter port: ");
+	int port = 0;
+	scanf("%d", &port);
+	UdpClient Client;
+	Client.UdpSetConnect(IP_addr, port);
+	char buff[BUF_SIZE] = "start ";
+	strcat(buff, this->nickname);
+	Client.UdpSend(buff, strlen(buff));
 
 }
 
 void MultiPlayer::CreateGame(){
-	const char *signal = "start";
-	char tmp_buff[5];
+	const char *signall = "start";
+	char tmp_buff[6];
+	memset(tmp_buff, 0, sizeof(tmp_buff));
 	UdpServ Server;
 	int count = 0;
 	while(1){
 		count = Server.UdpRecvEcho(buff, BUF_SIZE);
-		for(int i = 0; i < 5; i++)
-			tmp_buff[i] = buff[i];
-		if( !( strcmp(tmp_buff, signal) ) ){
-			char ip[count - 6];
+		memcpy(tmp_buff, buff, 5);
+		tmp_buff[5] = '\0';
+		if( !( strcmp(tmp_buff, signall) ) ){
+			char EnName[count - 6];
 			printf("Connect is established with ");
 			for(int i = 6; i < count - 1; i++){
-				ip[i-6] = buff[i];
-				printf("%c", ip[i]);
+				EnName[i-6] = buff[i];
+				printf("%c", EnName[i]);
 			}
 			cout << endl;
-			break;
-		}
-	}
+//			break;
+			printf("First turn from %s", this->nickname);
+			Server.UdpSend(this->nickname, strlen(this->nickname));
 
+		}
+		else
+			printf("%s not equal %s\n", tmp_buff, signall);
+	}
 
 }
 
