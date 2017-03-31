@@ -1,24 +1,24 @@
 # Cross
 This is a simple game - 'tic tac toe' for the family chip Zynq-7000.
 
-*** WHAT WORKS ***
+# WHAT WORKS 
 
 In this time exist singleplayer mode
 
-*** TODO ***
+# TODO
 
 Add multiplayer;
 
 Write normal tactic for computer;
 
-*** HOW TO PLAY ***
+# HOW TO PLAY
 
 First of all, you must to compile this project by your cross-compiler, and after send into board.
 
 After run application, you will see this menu. 
 
 
-  "_________________________________" 
+  	"_________________________________" 
   
 	"|---------- Cross 0.1v ----------|"
 	
@@ -40,17 +40,17 @@ In single game, for doing your turn, you must to insert "X" or "x" and position 
 
 Example:
 
-"Your turn X 1 1" or "Your turn x 2 0"
+`"Your turn X 1 1" or "Your turn x 2 0"`
 
 For reset game, you must to insert "R" and position in range from 0 to 2. After this, game will restart.
 
 Example: 
 
-"Your turn R 0 1"
+`"Your turn R 0 1"`
 
 And for exit from game, you must to insert "E".
 
 Example:
 
-"Your turn E"	
-"I was glad to see you. Goodbye!"
+`"Your turn E"	
+"I was glad to see you. Goodbye!"`
